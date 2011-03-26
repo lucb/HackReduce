@@ -21,6 +21,7 @@ public class BixiRecord {
 	SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yyyy__HH_mm_ss");
 
 	Date date;
+	String recordDate;
 	int stationId;
 	String name;
 	String terminalName;
@@ -33,9 +34,11 @@ public class BixiRecord {
 	boolean temporary;
 	int nbBikes;
 	int nbEmptyDocks;
+	String filename;
 
 	public BixiRecord(String xmlFilename, String xml) throws IllegalArgumentException {
 		String filename = xmlFilename.endsWith(".xml") ? xmlFilename.replace(".xml", "") : xmlFilename;
+		setRecordDate(filename);
 		try {
 			setDate(sdf.parse(filename));
 		} catch (ParseException e) {
@@ -98,6 +101,35 @@ public class BixiRecord {
 		this(xmlFilename.toString(), xml.toString());
 	}
 
+	public void setRecordDate(String recordDate)
+	{
+		this.recordDate = recordDate;
+	}
+
+	public String getRecordDate() {
+		return recordDate;
+	}
+
+	public String getRecordDateDay()
+	{
+		return getRecordDate().substring(0,10);
+	}
+
+	public String getRecordDateTime()
+	{
+		return getRecordDate().substring(12, 17);
+	}
+
+	public String getRecordDateHour()
+	{
+		//01_10_2010__11_43_02
+		return getRecordDateTime().substring(0,2);
+	}
+
+	public String getRecordDateMin()
+	{
+		return getRecordDateTime().substring(3,5);
+	}
 
 	public Date getDate() {
 		return date;
