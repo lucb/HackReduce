@@ -54,7 +54,7 @@ public class BixiStats extends org.hackreduce.examples.RecordCounter {
 			// context.write(TOTAL_COUNT, new
 			// LongWritable(record.getNbBikes()));
 
-			context.write(new Text(record.getRecordDateMin()+"_"+Integer.toString(record.getStationId())),
+			context.write(new Text(record.getRecordDateDay()+"_"+Integer.toString(record.getStationId())),
 					      new LongWritable(record.getNbBikes()));
 		}
 
