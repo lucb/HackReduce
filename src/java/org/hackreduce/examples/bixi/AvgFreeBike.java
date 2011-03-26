@@ -7,7 +7,6 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -17,13 +16,12 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.hackreduce.mappers.BixiMapper;
-import org.hackreduce.mappers.ModelMapper;
 import org.hackreduce.mappers.XMLInputFormat;
 import org.hackreduce.mappers.XMLRecordReader;
 import org.hackreduce.models.BixiRecord;
 
 /**
- * This MapReduce job will count the total number of Bixi records in the data dump.
+ * This MapReduce job will count the average number of Bixi records in the data dump.
  *
  */
 public class AvgFreeBike extends Configured implements Tool {
