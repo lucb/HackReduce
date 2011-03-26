@@ -1,5 +1,8 @@
 package org.hackreduce.models;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,6 +12,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.Writable;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,11 +20,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-public class BixiRecord {
+public class BixiRecord implements Writable {
 
-	SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yyyy__HH_mm_ss");
+	public SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yyyy__HH_mm_ss");
 
 	Date date;
+	String recordDate;
 	int stationId;
 	String name;
 	String terminalName;
@@ -36,6 +41,7 @@ public class BixiRecord {
 
 	public BixiRecord(String xmlFilename, String xml) throws IllegalArgumentException {
 		String filename = xmlFilename.endsWith(".xml") ? xmlFilename.replace(".xml", "") : xmlFilename;
+		setRecordDate(filename);
 		try {
 			setDate(sdf.parse(filename));
 		} catch (ParseException e) {
@@ -98,6 +104,35 @@ public class BixiRecord {
 		this(xmlFilename.toString(), xml.toString());
 	}
 
+	public void setRecordDate(String recordDate)
+	{
+		this.recordDate = recordDate;
+	}
+
+	public String getRecordDate() {
+		return recordDate;
+	}
+
+	public String getRecordDateDay()
+	{
+		return getRecordDate().substring(0,10);
+	}
+
+	public String getRecordDateTime()
+	{
+		return getRecordDate().substring(12, 17);
+	}
+
+	public String getRecordDateHour()
+	{
+		//01_10_2010__11_43_02
+		return getRecordDateTime().substring(0,2);
+	}
+
+	public String getRecordDateMin()
+	{
+		return getRecordDateTime().substring(3,5);
+	}
 
 	public Date getDate() {
 		return date;
@@ -201,6 +236,30 @@ public class BixiRecord {
 
 	public void setNbEmptyDocks(int nbEmptyDocks) {
 		this.nbEmptyDocks = nbEmptyDocks;
+	}
+
+	@Override
+	public void readFields(DataInput in) throws IOException {
+		nbBikes = in.readInt();
+	}
+
+	@Override
+	public void write(DataOutput out) throws IOException {
+		/*Date date;
+		String recordDate;
+		int stationId;
+		String name;
+		String terminalName;
+		double latitude;
+		double longitude;
+		boolean installed;
+		boolean locked;
+		Date installDate = null;
+		Date removalDate = null;
+		boolean temporary;
+		int nbBikes;
+		int nbEmptyDocks;*/
+		out.writeInt(nbBikes);
 	}
 
 }

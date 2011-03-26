@@ -21,7 +21,7 @@ import org.hackreduce.mappers.XMLRecordReader;
 import org.hackreduce.models.BixiRecord;
 
 /**
- * This MapReduce job will count the average number of Bixi records in the data dump.
+ * This MapReduce job will count the average number of Bixis records in the data dump.
  *
  */
 public class AvgFreeBike extends Configured implements Tool {
@@ -46,7 +46,7 @@ public class AvgFreeBike extends Configured implements Tool {
 			InterruptedException {
 
 			context.getCounter(Count.TOTAL_RECORDS).increment(1);
-			context.write(new Text(Integer.toString(record.getStationId())),
+			context.write(new Text(record.getRecordDateDay()+"_"+record.getRecordDateHour()+"_"+record.getStationId()),
 						  // new DoubleWritable(record.getNbBikes() + record.getNbEmptyDocks()));
 						  new DoubleWritable(record.getNbBikes()));
 		}
