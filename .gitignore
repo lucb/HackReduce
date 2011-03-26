@@ -9,3 +9,6 @@
 /dist
 /junit
 /nbproject
+
+# Just in case
+*.pem
