@@ -24,7 +24,7 @@ import org.hackreduce.models.BixiRecord;
  * This MapReduce job will count the average number of Bixis records in the data dump.
  *
  */
-public class AvgFreeBike extends Configured implements Tool {
+public class AvgFreeBikeSmall extends Configured implements Tool {
 
 	public enum Count {
 		TOTAL_RECORDS,
@@ -45,11 +45,16 @@ public class AvgFreeBike extends Configured implements Tool {
 			protected void map(BixiRecord record, Context context) throws IOException,
 			InterruptedException {
 
+			if(record.getRecordDateHour().equals("16") ||
+					record.getRecordDateHour().equals("17") ||
+					record.getRecordDateHour().equals("18") ||
+					record.getRecordDateHour().equals("19")){
+			
 			context.getCounter(Count.TOTAL_RECORDS).increment(1);
 			context.write(new Text(record.getRecordDateDay()+"_"+record.getRecordDateHour()+"_"+record.getStationId()),
 						  // new DoubleWritable(record.getNbBikes() + record.getNbEmptyDocks()));
 						  new DoubleWritable(record.getNbBikes()));
-		}
+		}}
 	}
 
 	public static class AvgFreeBikeReducer extends Reducer<Text, DoubleWritable, Text, Text> {
@@ -69,6 +74,7 @@ public class AvgFreeBike extends Configured implements Tool {
 
 			context.write(key, new Text(Double.toString(avg)));
 		}
+		
 
 	}
 
@@ -119,7 +125,7 @@ public class AvgFreeBike extends Configured implements Tool {
 	}
 
 	public static void main(String[] args) throws Exception {
-		int result = ToolRunner.run(new Configuration(), new AvgFreeBike(), args);
+		int result = ToolRunner.run(new Configuration(), new AvgFreeBikeSmall(), args);
 		System.exit(result);
 	}
 

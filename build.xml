@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="jar" name="hackreduce">
 
-    <property name="version" value="lucb_jfb_v1.1" />
+    <property name="version" value="lucb_jfb_v1.2" />
 
     <property name="lib.dir" value="${basedir}/lib" />
     <property name="build.dir" value="build" />
