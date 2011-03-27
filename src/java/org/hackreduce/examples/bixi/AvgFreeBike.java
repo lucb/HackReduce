@@ -34,7 +34,7 @@ public class AvgFreeBike extends Configured implements Tool {
 		UNIQUE_KEYS
 	}
 
-	public static class AvgFreeBikeMapper extends BixiMapper<Text, DoubleWritable> {
+	public static class AvgFreeBikeMapper extends BixiMapper<Text, IntWritable> {
 
 		// Our own made up key to send all counts to a single Reducer, so we can
 		// aggregate a total value.
@@ -50,26 +50,30 @@ public class AvgFreeBike extends Configured implements Tool {
 			context.getCounter(Count.TOTAL_RECORDS).increment(1);
 			context.write(new Text(Integer.toString(record.getStationId())),
 						  // new DoubleWritable(record.getNbBikes() + record.getNbEmptyDocks()));
-						  new DoubleWritable(record.getNbBikes()));
+						  new IntWritable(record.getNbBikes()));
 		}
 	}
 
-	public static class AvgFreeBikeReducer extends Reducer<Text, DoubleWritable, Text, Text> {
+	public static class AvgFreeBikeReducer extends Reducer<Text, IntWritable, Text, Text> {
 
 		@Override
 			protected void reduce(Text key,
-								  Iterable<DoubleWritable> values,
+								  Iterable<IntWritable> values,
 								  Context context)
 			throws IOException, InterruptedException {
 			context.getCounter(Count.STATION_IDS).increment(1);
 
+			int min =0;
+			int max = 0;
 			double avg = 0.0;
-			int n = 0;
-			for (DoubleWritable value : values) {
+			long n = 0;
+			for (IntWritable value : values) {
+				min = Math.min(min, value.get());
+				max = Math.max(max, value.get());
 				avg = (avg * n + value.get()) / ++n;
 			}
 
-			context.write(key, new Text(Double.toString(avg)));
+			context.write(key, new Text(Double.toString(avg) + " [" + Integer.toString(min) + "," + Integer.toString(max) + "]"));
 		}
 
 	}
@@ -103,7 +107,7 @@ public class AvgFreeBike extends Configured implements Tool {
 
 		// This is what the Mapper will be outputting to the Reducer
 		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(DoubleWritable.class);
+		job.setMapOutputValueClass(IntWritable.class);
 
 		// This is what the Reducer will be outputting
 		job.setOutputKeyClass(Text.class);
